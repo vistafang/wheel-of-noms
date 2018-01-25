@@ -226,35 +226,44 @@
         </script>
         <script>
         var x = document.getElementById("demo");
-        var url;
+        var url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
+        var position;
 
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition);
-
-            } else {
-                x.innerHTML = "Geolocation is not supported by this browser.";
-            }
-        }
-
-        function showPosition(position) {
-            x.innerHTML = "Latitude: " + position.coords.latitude +
-                "<br>Longitude: " + position.coords.longitude
-            url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + position.coords.latitude + "," + position.coords.longitude + "&radius=500&type=restaurant&key=AIzaSyDqzSU-lp-HhR8JAUTqniC_GNpkejnJo9A"
-            getPlaces(url)
-        }
-        getLocation()
-
-        var getPlaces = function(url) {
+        var getPlaces = function(pos) {
+            
+            x.innerHTML = "Latitude: " + pos.coords.latitude +
+                "<br>Longitude: " + pos.coords.longitude
+            position = pos.coords.latitude + "," + pos.coords.longitude
+            console.log(position)
             $.ajax({
                 url: url,
-                dataType: 'jsonp',
+                data: {
+                    location : position,
+                    key : "AIzaSyDqzSU-lp-HhR8JAUTqniC_GNpkejnJo9A",
+                    type: "restaurant",
+                    radius: 500
+                },
+                dataType: 'json',
                 success: function(data) {
                     alert(data)
                 }
             })
 
         }
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(getPlaces);
+
+            } else {
+                x.innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
+
+        
+        getLocation()
+
+        
 
         </script>
 </body>
