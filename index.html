@@ -27,7 +27,7 @@
 <html>
 
 <head>
-    <title>HTML5 Canvas Winning Wheel</title>
+    <title>Canvas Winning Wheel</title>
     <link rel="stylesheet" href="main.css" type="text/css" />
     <script type="text/javascript" src="Winwheel.min.js"></script>
     <script type="text/javascript" src="sampleresponse.js"></script>
@@ -88,14 +88,14 @@
         
         var theWheel = new Winwheel({
             'outerRadius': 212, // Set outer radius so wheel fits inside the background.
-            'innerRadius': 75, // Make wheel hollow so segments don't go all way to center.
+            'innerRadius': 65, // Make wheel hollow so segments don't go all way to center.
             'textFontSize': 10, // Set default font size for the segments.
             'textOrientation': 'vertical', // Make text vertial so goes down from the outside of wheel.
             'textAlignment': 'outer', // Align text to outside of wheel.
             'numSegments': 20, // Specify number of segments.
             'segments': // Define segments including colour and text.
                 [ // font size and test colour overridden on backrupt segments.
-                    { 'fillStyle': '#ee1c24', 'text': Sresponse.results[0].name },
+                    { 'fillStyle': '#ee1c24', 'text': "testin" },
                     { 'fillStyle': '#3cb878', 'text': Sresponse.results[1].name },
                     { 'fillStyle': '#f6989d', 'text': Sresponse.results[2].name },
                     { 'fillStyle': '#00aef0', 'text': Sresponse.results[3].name },
