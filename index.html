@@ -66,44 +66,8 @@
 		</div>
         <script>
         // Create new wheel object specifying the parameters at creation time.
-        
-        var theWheel = new Winwheel({
-            'outerRadius': 212, // Set outer radius so wheel fits inside the background.
-            'innerRadius': 65, // Make wheel hollow so segments don't go all way to center.
-            'textFontSize': 10, // Set default font size for the segments.
-            'textOrientation': 'vertical', // Make text vertial so goes down from the outside of wheel.
-            'textAlignment': 'outer', // Align text to outside of wheel.
-            'numSegments': 20, // Specify number of segments.
-            'segments': // Define segments including colour and text.
-                [ // font size and test colour overridden on backrupt segments.
-                    { 'fillStyle': '#3cb878', 'text': Sresponse.results[1].name },
-                    { 'fillStyle': '#f6989d', 'text': Sresponse.results[2].name },
-                    { 'fillStyle': '#00aef0', 'text': Sresponse.results[3].name },
-                    { 'fillStyle': '#f26522', 'text': Sresponse.results[4].name },
-                    { 'fillStyle': '#000000', 'text': Sresponse.results[5].name },
-                    { 'fillStyle': '#e70697', 'text': Sresponse.results[6].name },
-                    { 'fillStyle': '#fff200', 'text': Sresponse.results[7].name },
-                    { 'fillStyle': '#f6989d', 'text': Sresponse.results[8].name},
-                    { 'fillStyle': '#ee1c24', 'text': Sresponse.results[9].name},
-                    { 'fillStyle': '#3cb878', 'text': Sresponse.results[10].name},
-                    { 'fillStyle': '#f26522', 'text': Sresponse.results[11].name},
-                    { 'fillStyle': '#a186be', 'text': Sresponse.results[12].name},
-                    { 'fillStyle': '#fff200', 'text': Sresponse.results[13].name},
-                    { 'fillStyle': '#00aef0', 'text': Sresponse.results[14].name},
-                    { 'fillStyle': '#ee1c24', 'text': Sresponse.results[15].name},
-                    { 'fillStyle': '#f6989d', 'text': Sresponse.results[16].name},
-                    { 'fillStyle': '#f26522', 'text': Sresponse.results[17].name},
-                    { 'fillStyle': '#3cb878', 'text': Sresponse.results[18].name},
-                    { 'fillStyle': '#000000', 'text': Sresponse.results[19].name}
-                ],
-            'animation': // Specify the animation to use.
-            {
-                'type': 'spinToStop',
-                'duration': 8, // Duration in seconds.
-                'spins': 3, // Default number of complete spins.
-                'callbackFinished': alertPrize
-            }
-        });
+        var realData;
+			
 
         // Vars used by the code in this page to do power controls.
         var wheelPower = 0;
@@ -194,6 +158,15 @@
 		
 		powerSelected(2);
         
+		function getRandomColor(){
+			var letters="0123456789ABCDEF";
+			var p="#";
+			for (var i=0;i<6;i++){
+				p+=letters[Math.floor(Math.random()*16)];
+			}
+			return p;
+		}
+		
 		var getPlaces = function(pos) {
             /*
             x.innerHTML = "Latitude: " + pos.coords.latitude +
@@ -205,13 +178,34 @@
                 url: url,
                 data: {
                     location : position,
-                    key : "AIzaSyDqzSU-lp-HhR8JAUTqniC_GNpkejnJo9A",
+                    key : "AIzaSyBYLeZhd5Azh-sFjX1ggAf-zI4_akIzYPA",
                     type: "restaurant",
                     radius: 500
                 },
                 dataType: 'json',
                 success: function(data) {
-                    alert(data)
+					var segments=[];
+					var p = (data.results.length>20) ? 20:data.results.length;
+					for (var i=0;i<;i++){
+						segments[i].fillStyle=getRandomColor();
+						segments[i].text=data.results[i].name;
+					}
+					theWheel=new Winwheel({
+						'outerRadius': 212, // Set outer radius so wheel fits inside the background.
+						'innerRadius': 65, // Make wheel hollow so segments don't go all way to center.
+						'textFontSize': 10, // Set default font size for the segments.
+						'textOrientation': 'vertical', // Make text vertial so goes down from the outside of wheel.
+						'textAlignment': 'outer', // Align text to outside of wheel.
+						'numSegments': 20, // Specify number of segments.
+						'segments': segments;
+						'animation': // Specify the animation to use.
+						{
+							'type': 'spinToStop',
+							'duration': 8, // Duration in seconds.
+							'spins': 3, // Default number of complete spins.
+							'callbackFinished': alertPrize
+						}
+					});
                 }
             })
 
