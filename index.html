@@ -186,7 +186,7 @@
                 success: function(data) {
 					var segments=[];
 					var p = (data.results.length>20) ? 20:data.results.length;
-					for (var i=0;i<;i++){
+					for (var i=0;i<p;i++){
 						segments[i].fillStyle=getRandomColor();
 						segments[i].text=data.results[i].name;
 					}
