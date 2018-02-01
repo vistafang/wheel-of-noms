@@ -39,8 +39,8 @@
 <body>
     <div id="demo">Testing</div>
     <div align="center">
-        <h1>Winwheel.js example wheel - wheel of fortune</h1>
-        <p>Here is an example of a code-drawn Wheel of Fortune looking wheel which spins to a stop with the prize won alerted to the user.</p>
+        <h1>Nominate</h1>
+        <p>Picks a restaurant for you!</p>
         <br />
         <p>
             With some additional coding it could be made so that the prize won is added to a total after each spin rather than just alerting the prize to make a proper wheel of fortune like game.
@@ -226,35 +226,44 @@
         </script>
         <script>
         var x = document.getElementById("demo");
-        var url;
+        var url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
+        var position;
 
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition);
-
-            } else {
-                x.innerHTML = "Geolocation is not supported by this browser.";
-            }
-        }
-
-        function showPosition(position) {
-            x.innerHTML = "Latitude: " + position.coords.latitude +
-                "<br>Longitude: " + position.coords.longitude
-            url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + position.coords.latitude + "," + position.coords.longitude + "&radius=500&type=restaurant&key=AIzaSyDqzSU-lp-HhR8JAUTqniC_GNpkejnJo9A"
-            getPlaces(url)
-        }
-        getLocation()
-
-        var getPlaces = function(url) {
+        var getPlaces = function(pos) {
+            
+            x.innerHTML = "Latitude: " + pos.coords.latitude +
+                "<br>Longitude: " + pos.coords.longitude
+            position = pos.coords.latitude + "," + pos.coords.longitude
+            console.log(position)
             $.ajax({
                 url: url,
-                dataType: 'jsonp',
+                data: {
+                    location : position,
+                    key : "AIzaSyDqzSU-lp-HhR8JAUTqniC_GNpkejnJo9A",
+                    type: "restaurant",
+                    radius: 500
+                },
+                dataType: 'json',
                 success: function(data) {
                     alert(data)
                 }
             })
 
         }
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(getPlaces);
+
+            } else {
+                x.innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
+
+        
+        getLocation()
+
+        
 
         </script>
 </body>
