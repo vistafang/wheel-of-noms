@@ -49,7 +49,7 @@
 
         <div>
             <p>What were you looking to </p>
-            <button onclick="getPlaces()"> Ssschflik
+            <button onclick="loadWheel()"> Ssschflik
                                     </button>
 
 
@@ -79,6 +79,10 @@
 			<iframe id="result_frame" width="600" height="450" frameborder="0" style="border:0"></iframe>
 			<a href="#" onClick="resetWheel(); powerSelected(2); return false;">Spin Again</a>
 		</div>
+		<div id="invis" style="display:none">
+			<p> invisible div for map</p>
+		</div>
+		
         <script>
         // Create new wheel object specifying the parameters at creation time.
         var realData;
@@ -182,31 +186,7 @@
 			return p;
 		}
 		
-		var getPlaces = function(pos) {
-            /*
-            x.innerHTML = "Latitude: " + pos.coords.latitude +
-                "<br>Longitude: " + pos.coords.longitude
-			*/
-            position = pos.coords.latitude + "," + pos.coords.longitude
-            console.log(position)
-            $.ajax({
-                url: url,
-                data: {
-                    location : position,
-                    key : "AIzaSyBYLeZhd5Azh-sFjX1ggAf-zI4_akIzYPA",
-                    type: "restaurant",
-                    radius: 500
-                },
-                dataType: 'json',
-                success: function(data) {
-					var segments=[];
-					var p = (data.results.length>20) ? 20:data.results.length;
-					for (var i=0;i<p;i++){
-						segments[i].fillStyle=getRandomColor();
-						segments[i].text=data.results[i].name;
->>>>>>> 3eb1a092f0d2fad2cf4366c4f908ef2c23956730
-					}
-				}
+		
 				
 				// -------------------------------------------------------
 				// Click handler for spin button.
@@ -285,7 +265,7 @@
 					return p;
 				}
 				
-				function getPlaces(pos) {
+				function loadWheel(pos) {
 
 					/*
 						x.innerHTML = "Latitude: " + pos.coords.latitude +
@@ -308,20 +288,46 @@
 					})
 					
 				}
+
+				
+				
+				
+				
+				
+				
+		if (navigator.geolocation)navigator.geolocation.getCurrentPosition(showPosition);
+			var p;
+			function showPosition(position) {
+				p=position;
+			}
+			
+				
+				
+				
+				
+				
+				
+				
 				
 
 				function loadWheel(activityType) {
-					var pyrmont = new google.maps.LatLng(-33.8665, 151.1956);
+					var place;
+					if (p){
+						place = new google.maps.LatLng(p.coords.latitude, p.coords.longitude);
+					}else{
+						place = new google.maps.LatLng(-33.8665, 151.1956);
+					}
 					
-					var map = new google.maps.Map(document.getElementById('map'), {
-						center: pyrmont,
+					
+					var map = new google.maps.Map(document.getElementById('invis'), {
+						center: place,
 						zoom: 15,
 						scrollwheel: false
 					});
 					
 					// Specify location, radius and place types for your Places API search.
 					var request = {
-						location: pyrmont,
+						location: place,
 						radius: '500',
 						types: [activityType]
 					};
@@ -343,7 +349,7 @@
 									'innerRadius': 65, // Make wheel hollow so segments don't go all way to center.
 									'textFontSize': 10, // Set default font size for the segments.
 									'textOrientation': 'vertical', // Make text vertial so goes down from the outside of wheel.
-									'textAlignment': 'outer', // Align text to outside of wheel.
+									'textAlignment': 'outer', // `	Align text to outside of wheel.
 									'numSegments': 20, // Specify number of segments.
 									'segments': segments,
 									'animation': // Specify the animation to use.
@@ -360,7 +366,6 @@
 				}
 				
 				// Run the initialize function when the window has finished loading.
-				google.maps.event.addDomListener(window, 'load', initialize);
 			</script>
 		</body>
 		
