@@ -313,10 +313,10 @@
 						if (status == google.maps.places.PlacesServiceStatus.OK) {
 							for (var i = 0; i < results.length; i++) {		
 								var segments=[];
-								var p = (data.results.length>20) ? 20:data.results.length;
+								var p = (results.length>20) ? 20:results.length;
 								for (var i=0;i<p;i++){
 									segments[i].fillStyle=getRandomColor();
-									segments[i].text=data.results[i].name;
+									segments[i].text=results[i].name;
 								}
 								theWheel=new Winwheel({
 									'outerRadius': 212, // Set outer radius so wheel fits inside the background.
