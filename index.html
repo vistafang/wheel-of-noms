@@ -173,31 +173,7 @@
 			return p;
 		}
 		
-		var getPlaces = function(pos) {
-            /*
-            x.innerHTML = "Latitude: " + pos.coords.latitude +
-                "<br>Longitude: " + pos.coords.longitude
-			*/
-            position = pos.coords.latitude + "," + pos.coords.longitude
-            console.log(position)
-            $.ajax({
-                url: url,
-                data: {
-                    location : position,
-                    key : "AIzaSyBYLeZhd5Azh-sFjX1ggAf-zI4_akIzYPA",
-                    type: "restaurant",
-                    radius: 500
-                },
-                dataType: 'json',
-                success: function(data) {
-					var segments=[];
-					var p = (data.results.length>20) ? 20:data.results.length;
-					for (var i=0;i<p;i++){
-						segments[i].fillStyle=getRandomColor();
-						segments[i].text=data.results[i].name;
->>>>>>> 3eb1a092f0d2fad2cf4366c4f908ef2c23956730
-					}
-				}
+		
 				
 				// -------------------------------------------------------
 				// Click handler for spin button.
@@ -276,42 +252,48 @@
 					return p;
 				}
 				
-				function getPlaces(pos) {
-					/*
-						x.innerHTML = "Latitude: " + pos.coords.latitude +
-						"<br>Longitude: " + pos.coords.longitude
-					*/
-					position = pos.coords.latitude + "," + pos.coords.longitude
-					console.log(position)
-					$.ajax({
-						url: url,
-						data: {
-							location : position,
-							key : "AIzaSyBYLeZhd5Azh-sFjX1ggAf-zI4_akIzYPA",
-							type: "restaurant",
-							radius: 500
-						},
-						dataType: 'json',
-						success: function(data) {
-							
-						}
-					})
-					
-				}
+				
+				
+				
+				
+				
+				
+				
+		if (navigator.geolocation)navigator.geolocation.getCurrentPosition(showPosition);
+			var p;
+			function showPosition(position) {
+				p=position;
+				x.innerHTML = "Latitude: " + position.coords.latitude + 
+				"<br>Longitude: " + position.coords.longitude; 
+			}
+			
+				
+				
+				
+				
+				
+				
+				
 				
 
 				function loadWheel(activityType) {
-					var pyrmont = new google.maps.LatLng(-33.8665, 151.1956);
+					var place;
+					if (p){
+						place = new google.maps.LatLng(p.coords.latitude, p.coords.longitude);
+					}else{
+						place = new google.maps.LatLng(-33.8665, 151.1956);
+					}
+					
 					
 					var map = new google.maps.Map(document.getElementById('map'), {
-						center: pyrmont,
+						center: place,
 						zoom: 15,
 						scrollwheel: false
 					});
 					
 					// Specify location, radius and place types for your Places API search.
 					var request = {
-						location: pyrmont,
+						location: place,
 						radius: '500',
 						types: [activityType]
 					};
@@ -350,7 +332,6 @@
 				}
 				
 				// Run the initialize function when the window has finished loading.
-				google.maps.event.addDomListener(window, 'load', initialize);
 			</script>
 		</body>
 		
