@@ -1,21 +1,21 @@
 <!--
     Winhweel.js wheel of fortune example by Douglas McKechie @ www.dougtesting.net
     See website for tutorials and other documentation.
-
+	
     The MIT License (MIT)
-
+	
     Copyright (c) 2016 Douglas McKechie
-
+	
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
     in the Software without restriction, including without limitation the rights
     to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
     copies of the Software, and to permit persons to whom the Software is
     furnished to do so, subject to the following conditions:
-
+	
     The above copyright notice and this permission notice shall be included in all
     copies or substantial portions of the Software.
-
+	
     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
     FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,7 +25,6 @@
     SOFTWARE.
 -->
 <html>
-
 <head>
     <title>Ssschflik</title>
     <link rel="stylesheet" href="main.css" type="text/css" />
@@ -49,6 +48,7 @@
             <p>What were you looking to </p>
             <button onclick="getPlaces()"> Ssschflik
                                     </button>
+
 
             <input type="text" id= "activityType" placeholder="Activity/Food/Event..?"> 
 
@@ -201,43 +201,163 @@
 					for (var i=0;i<p;i++){
 						segments[i].fillStyle=getRandomColor();
 						segments[i].text=data.results[i].name;
+>>>>>>> 3eb1a092f0d2fad2cf4366c4f908ef2c23956730
 					}
-					theWheel=new Winwheel({
-						'outerRadius': 212, // Set outer radius so wheel fits inside the background.
-						'innerRadius': 65, // Make wheel hollow so segments don't go all way to center.
-						'textFontSize': 10, // Set default font size for the segments.
-						'textOrientation': 'vertical', // Make text vertial so goes down from the outside of wheel.
-						'textAlignment': 'outer', // Align text to outside of wheel.
-						'numSegments': 20, // Specify number of segments.
-						'segments': segments;
-						'animation': // Specify the animation to use.
-						{
-							'type': 'spinToStop',
-							'duration': 8, // Duration in seconds.
-							'spins': 3, // Default number of complete spins.
-							'callbackFinished': alertPrize
+				}
+				
+				// -------------------------------------------------------
+				// Click handler for spin button.
+				// -------------------------------------------------------
+				function startSpin() {
+					// Ensure that spinning can't be clicked again while already running.
+					if (wheelSpinning == false) {
+						// Based on the power level selected adjust the number of spins for the wheel, the more times is has
+						// to rotate with the duration of the animation the quicker the wheel spins.
+						if (wheelPower == 1) {
+							theWheel.animation.spins = 3;
+							} else if (wheelPower == 2) {
+							theWheel.animation.spins = 6;
+							} else if (wheelPower == 3) {
+							theWheel.animation.spins = 9;
+						}
+						
+						// Disable the spin button so can't click again while wheel is spinning.
+						document.getElementById('spin_button').src = "spin_off.png";
+						document.getElementById('spin_button').className = "";
+						
+						// Begin the spin animation by calling startAnimation on the wheel object.
+						theWheel.startAnimation();
+						
+						// Set to true so that power can't be changed and spin button re-enabled during
+						// the current animation. The user will have to reset before spinning again.
+						wheelSpinning = true;
+					}
+				}
+				
+				// -------------------------------------------------------
+				// Function for reset button.
+				// -------------------------------------------------------
+				function resetWheel() {
+					theWheel.stopAnimation(false); // Stop the animation, false as param so does not call callback function.
+					theWheel.rotationAngle = 0; // Re-set the wheel angle to 0 degrees.
+					theWheel.draw(); // Call draw to render changes to the wheel.
+					
+					wheelSpinning = false; // Reset to false to power buttons and spin can be clicked again.
+					
+					//show the actual wheel itself
+					
+					
+					
+					$("#spinner").show();
+					$("#result").hide();
+				}
+				
+				// -------------------------------------------------------
+				// Called when the spin animation has finished by the callback feature of the wheel because I specified callback in the parameters.
+				// -------------------------------------------------------
+				function alertPrize(indicatedSegment) {
+					// In a real project probably want to do something more interesting than this with the result.
+					
+					$("#spinner").hide();
+					
+					$("#result_frame")[0].src="https://www.google.com/maps/embed/v1/place?key=AIzaSyA-WrVFgScO7VwF4nZws22J38RbxyZI3AQ&q="+indicatedSegment.text;
+					
+					$("#result").show();
+				}
+				
+			</script>
+			<script>
+				//var x = document.getElementById("demo");
+				var url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
+				var position;
+				
+				powerSelected(2);
+				
+				function getRandomColor(){
+					var letters="0123456789ABCDEF";
+					var p="#";
+					for (var i=0;i<6;i++){
+						p+=letters[Math.floor(Math.random()*16)];
+					}
+					return p;
+				}
+				
+				function getPlaces(pos) {
+					/*
+						x.innerHTML = "Latitude: " + pos.coords.latitude +
+						"<br>Longitude: " + pos.coords.longitude
+					*/
+					position = pos.coords.latitude + "," + pos.coords.longitude
+					console.log(position)
+					$.ajax({
+						url: url,
+						data: {
+							location : position,
+							key : "AIzaSyBYLeZhd5Azh-sFjX1ggAf-zI4_akIzYPA",
+							type: "restaurant",
+							radius: 500
+						},
+						dataType: 'json',
+						success: function(data) {
+							
+						}
+					})
+					
+				}
+				
+
+				function loadWheel(activityType) {
+					var pyrmont = new google.maps.LatLng(-33.8665, 151.1956);
+					
+					var map = new google.maps.Map(document.getElementById('map'), {
+						center: pyrmont,
+						zoom: 15,
+						scrollwheel: false
+					});
+					
+					// Specify location, radius and place types for your Places API search.
+					var request = {
+						location: pyrmont,
+						radius: '500',
+						types: [activityType]
+					};
+					
+					// Create the PlaceService and send the request.
+					// Handle the callback with an anonymous function.
+					var service = new google.maps.places.PlacesService(map);
+					service.nearbySearch(request, function(results, status) {
+						if (status == google.maps.places.PlacesServiceStatus.OK) {
+							for (var i = 0; i < results.length; i++) {		
+								var segments=[];
+								var p = (data.results.length>20) ? 20:data.results.length;
+								for (var i=0;i<p;i++){
+									segments[i].fillStyle=getRandomColor();
+									segments[i].text=data.results[i].name;
+								}
+								theWheel=new Winwheel({
+									'outerRadius': 212, // Set outer radius so wheel fits inside the background.
+									'innerRadius': 65, // Make wheel hollow so segments don't go all way to center.
+									'textFontSize': 10, // Set default font size for the segments.
+									'textOrientation': 'vertical', // Make text vertial so goes down from the outside of wheel.
+									'textAlignment': 'outer', // Align text to outside of wheel.
+									'numSegments': 20, // Specify number of segments.
+									'segments': segments,
+									'animation': // Specify the animation to use.
+									{
+										'type': 'spinToStop',
+										'duration': 8, // Duration in seconds.
+										'spins': 3, // Default number of complete spins.
+										'callbackFinished': alertPrize
+									}
+								});
+							}
 						}
 					});
-                }
-            })
-
-		}
-
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(getPlaces);
-
-            } else {
-                //x.innerHTML = "Geolocation is not supported by this browser.";
-            }
-        }
-
-        
-        getLocation()
-
-        
-
-        </script>
-</body>
-
-</html>
+				}
+				
+				// Run the initialize function when the window has finished loading.
+				google.maps.event.addDomListener(window, 'load', initialize);
+			</script>
+		</body>
+		
+	</html>
