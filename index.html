@@ -28,11 +28,14 @@
 <head>
     <title>Ssschflik</title>
     <link rel="stylesheet" href="main.css" type="text/css" />
+    <link rel='stylesheet' media='screen and (min-width: 701px)' href='css/medium.css' />
+
     <script type="text/javascript" src="Winwheel.min.js"></script>
     <script type="text/javascript" src="sampleresponse.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
     <script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false&libraries=places&key=AIzaSyBYLeZhd5Azh-sFjX1ggAf-zI4_akIzYPA"></script> 
     <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+   
 </head>
 
 <body>
@@ -262,7 +265,30 @@
 					return p;
 				}
 				
-				
+				function loadWheel(pos) {
+
+					/*
+						x.innerHTML = "Latitude: " + pos.coords.latitude +
+						"<br>Longitude: " + pos.coords.longitude
+					*/
+					position = pos.coords.latitude + "," + pos.coords.longitude
+					console.log(position)
+					$.ajax({
+						url: url,
+						data: {
+							location : position,
+							key : "AIzaSyBYLeZhd5Azh-sFjX1ggAf-zI4_akIzYPA",
+							type: "restaurant",
+							radius: 500
+						},
+						dataType: 'json',
+						success: function(data) {
+							
+						}
+					})
+					
+				}
+
 				
 				
 				

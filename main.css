@@ -11,6 +11,22 @@ Verison History:
 */
 
 body
+@media only screen and (max-device-width: 481px) {
+        div#wrapper {
+            width: 400px;
+        }
+
+
+        #content {
+            float: none;
+            width: 100%;
+        }
+
+        #navigation {
+            float:none;
+            width: auto;
+        }
+    }
 {
     font-family: arial;
 }
