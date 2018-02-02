@@ -46,7 +46,7 @@
 
         <div>
             <p>What were you looking to </p>
-            <button onclick="getPlaces()"> Ssschflik
+            <button onclick="loadWheel()"> Ssschflik
                                     </button>
 
 
@@ -269,8 +269,6 @@
 			var p;
 			function showPosition(position) {
 				p=position;
-				x.innerHTML = "Latitude: " + position.coords.latitude + 
-				"<br>Longitude: " + position.coords.longitude; 
 			}
 			
 				
@@ -289,13 +287,6 @@
 					}else{
 						place = new google.maps.LatLng(-33.8665, 151.1956);
 					}
-					
-					
-					var map = new google.maps.Map(document.getElementById('map'), {
-						center: place,
-						zoom: 15,
-						scrollwheel: false
-					});
 					
 					// Specify location, radius and place types for your Places API search.
 					var request = {
