@@ -76,6 +76,10 @@
 			<iframe id="result_frame" width="600" height="450" frameborder="0" style="border:0"></iframe>
 			<a href="#" onClick="resetWheel(); powerSelected(2); return false;">Spin Again</a>
 		</div>
+		<div id="invis" style="display:none">
+			<p> invisible div for map</p>
+		</div>
+		
         <script>
         // Create new wheel object specifying the parameters at creation time.
         var realData;
@@ -287,6 +291,13 @@
 					}else{
 						place = new google.maps.LatLng(-33.8665, 151.1956);
 					}
+					
+					
+					var map = new google.maps.Map(document.getElementById('invis'), {
+						center: place,
+						zoom: 15,
+						scrollwheel: false
+					});
 					
 					// Specify location, radius and place types for your Places API search.
 					var request = {
