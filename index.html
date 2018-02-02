@@ -308,7 +308,10 @@
 				
 				
 				
-				
+				function thing(fill, loc){
+					this.fillStyle=fill;
+					this.text=loc;
+				}
 
 				function loadWheel(activityType) {
 					var place;
@@ -341,8 +344,7 @@
 								var segments=[];
 								var p = (results.length>20) ? 20:results.length;
 								for (var i=0;i<p;i++){
-									segments[i].fillStyle=getRandomColor();
-									segments[i].text=results[i].name;
+									segments.push(new thing(getRandomColor(),results[i].name));
 								}
 								theWheel=new Winwheel({
 									'outerRadius': 212, // Set outer radius so wheel fits inside the background.
