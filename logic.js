@@ -111,13 +111,33 @@ window.onload=function(){
 		scrollwheel: false
 	});
 	service = new google.maps.places.PlacesService(map);
+	var autocomplete = new google.maps.places.Autocomplete($("#lcin")[0]);
 	getPosition();
 	setsel(1);
 	
+	autocomplete.setTypes(['geocode']);
+	
+	
+	
+	autocomplete.addListener('place_changed', function() {
+		
+		var place = autocomplete.getPlace();
+		if (!place.geometry) {
+            // User entered the name of a Place that was not suggested and
+            // pressed the Enter key, or the Place Details request failed.
+            window.alert("No details available for input: '" + place.name + "'");
+            return;
+		}
+		p={'lat':place.geometry.location.lat(),"lon":place.geometry.location.lng()};
+		loadWheel();
+		/*
+			infowindowContent.children['place-icon'].src = place.icon;
+			infowindowContent.children['place-name'].textContent = place.name;
+			infowindowContent.children['place-address'].textContent = address;
+			infowindow.open(map, marker);
+		*/
+	});
 }
-
-
-
 
 function thing(fill, loc){
 	this.fillStyle=fill;
@@ -127,7 +147,7 @@ var rqset;
 function loadWheel() {
 	var place;
 	if (p){
-		place = new google.maps.LatLng(p.coords.latitude, p.coords.longitude);
+		place = new google.maps.LatLng(p.lat, p.lon);
 		}else{
 		place = new google.maps.LatLng(-33.8665, 151.1956);
 	}
@@ -137,42 +157,42 @@ function loadWheel() {
 	var request = {
 		location: place,
 		radius: '500',
-		types: rqset
-	};
-	
-	// Create the PlaceService and send the request.
-	// Handle the callback with an anonymous function.
-	service.nearbySearch(request, function(results, status) {
-		if (status == google.maps.places.PlacesServiceStatus.OK) {
-			for (var i = 0; i < results.length; i++) {		
-				var segments=[];
-				var segct = (results.length>20) ? 20:results.length;
-				for (var i=0;i<segct;i++){
-					segments.push(new thing(getRandomColor(),results[i].name));
-				}
-			}
-			theWheel=new Winwheel({
-				'outerRadius': 212, // Set outer radius so wheel fits inside the background.
-				'innerRadius': 65, // Make wheel hollow so segments don't go all way to center.
-				'textFontSize': 10, // Set default font size for the segments.
-				'textOrientation': 'vertical', // Make text vertial so goes down from the outside of wheel.
-				'textAlignment': 'outer', // `	Align text to outside of wheel.
-				'numSegments': segct, // Specify number of segments.
-				'segments': segments,
-				'animation': // Specify the animation to use.
-				{
-					'type': 'spinToStop',
-					'duration': 8, // Duration in seconds.
-					'spins': 3, // Default number of complete spins.
-					'callbackFinished': alertPrize
-				}
-			});
-			if (postspin){
-				startSpin();
-				postspin=false;
+	types: rqset
+};
+
+// Create the PlaceService and send the request.
+// Handle the callback with an anonymous function.
+service.nearbySearch(request, function(results, status) {
+	if (status == google.maps.places.PlacesServiceStatus.OK) {
+		for (var i = 0; i < results.length; i++) {		
+			var segments=[];
+			var segct = (results.length>20) ? 20:results.length;
+			for (var i=0;i<segct;i++){
+				segments.push(new thing(getRandomColor(),results[i].name));
 			}
 		}
-	});
+		theWheel=new Winwheel({
+			'outerRadius': 212, // Set outer radius so wheel fits inside the background.
+			'innerRadius': 65, // Make wheel hollow so segments don't go all way to center.
+			'textFontSize': 10, // Set default font size for the segments.
+			'textOrientation': 'vertical', // Make text vertial so goes down from the outside of wheel.
+			'textAlignment': 'outer', // `	Align text to outside of wheel.
+			'numSegments': segct, // Specify number of segments.
+			'segments': segments,
+			'animation': // Specify the animation to use.
+			{
+				'type': 'spinToStop',
+				'duration': 8, // Duration in seconds.
+				'spins': 3, // Default number of complete spins.
+				'callbackFinished': alertPrize
+			}
+		});
+		if (postspin){
+			startSpin();
+			postspin=false;
+		}
+	}
+});
 }
 
 function setsel(set){
@@ -202,6 +222,7 @@ function getPosition(){
 	}
 }
 function showPosition(position) {
+	p={'lat':position.coords.latitude,"lon":position.coords.longitude};
 	p=position;
 	// Specify location, radius and place types for your Places API search.
 	var geocoder = new google.maps.Geocoder;
