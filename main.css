@@ -10,29 +10,12 @@ Verison History:
     - Minor updates for the 2.0 winwheel example.
 */
 
-body
-@media only screen and (max-device-width: 481px) {
-        div#wrapper {
-            width: 400px;
-        }
-
-
-        #content {
-            float: none;
-            width: 100%;
-        }
-
-        #navigation {
-            float:none;
-            width: auto;
-        }
-    }
 {
     font-family: arial;
 }
 
 /* Sets the background image for the wheel */
-td.the_wheel
+.the_wheel
 {
     background-image: url(./wheel_back.png);
     background-position: center;
@@ -45,56 +28,21 @@ h1, p
     margin: 0;
 }
 
-div.power_controls
-{
-    margin-right:70px;
-}
-
-div.html5_logo
-{
-    margin-left:70px;
-}
-
-/* Styles for the power selection controls */
-table.power
-{
-    background-color: #cccccc;
-    cursor: pointer;
-    border:1px solid #333333;
-}
-
-table.power th
-{
-    background-color: white;
-    cursor: default;
-}
-
-td.pw1
-{
-    background-color: #6fe8f0;
-}
-
-td.pw2
-{
-    background-color: #86ef6f;
-}
-
-td.pw3
-{
-    background-color: #ef6f6f;
-}
-
-/* Style applied to the spin button once a power has been selected */
-.clickable
-{
-    cursor: pointer;
-}
-
-/* Other misc styles */
-.margin_bottom
-{
-    margin-bottom: 5px;
-}
-#result{
+#choicesel, #result{
 	display:none;
+}
+
+.setsels{
+	text-align:center;
+	border: solid;
+	border-width:1px;
+	background-color:darkgreen;
+	color:white;
+	width:5vw;
+	height:60px;
+}
+
+.selected{
+	background-color:#00ff00;
+	color:black;
 }

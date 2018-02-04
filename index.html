@@ -25,346 +25,90 @@
     SOFTWARE.
 -->
 <html>
-<head>
-    <title>Nominate</title>
-    <link rel="stylesheet" href="main.css" type="text/css" />
-    <link rel='stylesheet' media='screen and (min-width: 701px)' href='css/medium.css' />
-
-    <script type="text/javascript" src="Winwheel.min.js"></script>
-    <script type="text/javascript" src="sampleresponse.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
-    <script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false&libraries=places&key=AIzaSyBYLeZhd5Azh-sFjX1ggAf-zI4_akIzYPA"></script> 
-    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
-   
-</head>
-
-<body>
-    <div align="center">
-        <h1>Nominate</h1>
-        <p>Picks a restaurant for you!</p>
-        <br />
-        <p>
-            Can't decide? Let Nominate find something for you!
-        </p>
-
-        <div id="spinner">
-            <p>What were you looking to </p>
-            <button onclick="loadWheel()">Nominate</button>
-
-
-            <input type="text" id= "activityType" placeholder="Activity/Food/Event">
-        <table cellpadding="0" cellspacing="0" border="0">
-            <tr>
-                <td>
-                    <div class="power_controls">
-						<br />
-                        <img id="spin_button" src="spin_off.png" alt="Spin" onClick="startSpin();" />
-                        <br /> &nbsp;&nbsp;
-                    </div>
-                </td>
-                <td width="438" height="582" class="the_wheel" align="center" valign="center">
-                    <canvas id="canvas" width="434" height="434">
-                        <p style="{color: white}" align="center">Sorry, your browser doesn't support canvas. Please try another.</p>
-                    </canvas>
-                </td>
-            </tr>
-        </table>
-		</div>
-		<div id="result">
-			<iframe id="result_frame" width="600" height="450" frameborder="0" style="border:0"></iframe>
-			<br/>
-			<a href="#" onClick="resetWheel(); powerSelected(2); return false;">Spin Again</a>
-		</div>
-		<div id="invis" style="display:none">
-			<p> invisible div for map</p>
-		</div>
+	<head>
+		<title>Nominate</title>
+		<link rel="stylesheet" href="main.css" type="text/css" />
+		<link rel='stylesheet' media='screen and (min-width: 701px)' href='css/medium.css' />
+		<script src="logic.js"></script>
+		<script type="text/javascript" src="Winwheel.min.js"></script>
+		<script type="text/javascript" src="sampleresponse.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
+		<script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false&libraries=places&key=AIzaSyBYLeZhd5Azh-sFjX1ggAf-zI4_akIzYPA"></script> 
+		<script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
 		
-        <script>
-        // Create new wheel object specifying the parameters at creation time.
-        var realData;
-			
-
-        // Vars used by the code in this page to do power controls.
-        var wheelPower = 0;
-        var wheelSpinning = false;
-
-        // -------------------------------------------------------
-        // Function to handle the onClick on the power buttons.
-        // -------------------------------------------------------
-        function powerSelected(powerLevel) {
-            // Ensure that power can't be changed while wheel is spinning.
-            if (wheelSpinning == false) {
-                // Reset all to grey incase this is not the first time the user has selected the power.
-
-                // Set wheelPower var used when spin button is clicked.
-                wheelPower = powerLevel;
-
-                // Light up the spin button by changing it's source image and adding a clickable class to it.
-                document.getElementById('spin_button').src = "spin_on.png";
-                document.getElementById('spin_button').className = "clickable";
-            }
-        }
-
-        // -------------------------------------------------------
-        // Click handler for spin button.
-        // -------------------------------------------------------
-        function startSpin() {
-            // Ensure that spinning can't be clicked again while already running.
-            if (wheelSpinning == false) {
-                // Based on the power level selected adjust the number of spins for the wheel, the more times is has
-                // to rotate with the duration of the animation the quicker the wheel spins.
-                if (wheelPower == 1) {
-                    theWheel.animation.spins = 3;
-                } else if (wheelPower == 2) {
-                    theWheel.animation.spins = 6;
-                } else if (wheelPower == 3) {
-                    theWheel.animation.spins = 9;
-                }
-
-                // Disable the spin button so can't click again while wheel is spinning.
-                document.getElementById('spin_button').src = "spin_off.png";
-                document.getElementById('spin_button').className = "";
-
-                // Begin the spin animation by calling startAnimation on the wheel object.
-                theWheel.startAnimation();
-
-                // Set to true so that power can't be changed and spin button re-enabled during
-                // the current animation. The user will have to reset before spinning again.
-                wheelSpinning = true;
-            }
-        }
-
-        // -------------------------------------------------------
-        // Function for reset button.
-        // -------------------------------------------------------
-        function resetWheel() {
-            theWheel.stopAnimation(false); // Stop the animation, false as param so does not call callback function.
-            theWheel.rotationAngle = 0; // Re-set the wheel angle to 0 degrees.
-            theWheel.draw(); // Call draw to render changes to the wheel.
-
-            wheelSpinning = false; // Reset to false to power buttons and spin can be clicked again.
-			
-			//show the actual wheel itself
-			
-			
-			
-			$("#spinner").show();
-			$("#result").hide();
-        }
-
-        // -------------------------------------------------------
-        // Called when the spin animation has finished by the callback feature of the wheel because I specified callback in the parameters.
-        // -------------------------------------------------------
-        function alertPrize(indicatedSegment) {
-            // In a real project probably want to do something more interesting than this with the result.
-            
-			$("#spinner").hide();
-			
-			$("#result_frame")[0].src="https://www.google.com/maps/embed/v1/place?key=AIzaSyA-WrVFgScO7VwF4nZws22J38RbxyZI3AQ&q="+indicatedSegment.text;
-			
-			$("#result").show();
-        }
-
-        </script>
-        <script>
-        //var x = document.getElementById("demo");
-        var url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
-        var position;
-		
-		powerSelected(2);
-        
-		function getRandomColor(){
-			var letters="0123456789ABCDEF";
-			var p="#";
-			for (var i=0;i<6;i++){
-				p+=letters[Math.floor(Math.random()*16)];
-			}
-			return p;
-		}
-		
-		
-				
-				// -------------------------------------------------------
-				// Click handler for spin button.
-				// -------------------------------------------------------
-				function startSpin() {
-					// Ensure that spinning can't be clicked again while already running.
-					if (wheelSpinning == false) {
-						// Based on the power level selected adjust the number of spins for the wheel, the more times is has
-						// to rotate with the duration of the animation the quicker the wheel spins.
-						if (wheelPower == 1) {
-							theWheel.animation.spins = 3;
-							} else if (wheelPower == 2) {
-							theWheel.animation.spins = 6;
-							} else if (wheelPower == 3) {
-							theWheel.animation.spins = 9;
-						}
-						
-						// Disable the spin button so can't click again while wheel is spinning.
-						document.getElementById('spin_button').src = "spin_off.png";
-						document.getElementById('spin_button').className = "";
-						
-						// Begin the spin animation by calling startAnimation on the wheel object.
-						theWheel.startAnimation();
-						
-						// Set to true so that power can't be changed and spin button re-enabled during
-						// the current animation. The user will have to reset before spinning again.
-						wheelSpinning = true;
-					}
-				}
-				
-				// -------------------------------------------------------
-				// Function for reset button.
-				// -------------------------------------------------------
-				function resetWheel() {
-					theWheel.stopAnimation(false); // Stop the animation, false as param so does not call callback function.
-					theWheel.rotationAngle = 0; // Re-set the wheel angle to 0 degrees.
-					theWheel.draw(); // Call draw to render changes to the wheel.
-					
-					wheelSpinning = false; // Reset to false to power buttons and spin can be clicked again.
-					
-					//show the actual wheel itself
-					
-					
-					
-					$("#spinner").show();
-					$("#result").hide();
-				}
-				
-				// -------------------------------------------------------
-				// Called when the spin animation has finished by the callback feature of the wheel because I specified callback in the parameters.
-				// -------------------------------------------------------
-				function alertPrize(indicatedSegment) {
-					// In a real project probably want to do something more interesting than this with the result.
-					
-					$("#spinner").hide();
-					
-					$("#result_frame")[0].src="https://www.google.com/maps/embed/v1/place?key=AIzaSyA-WrVFgScO7VwF4nZws22J38RbxyZI3AQ&q="+indicatedSegment.text;
-					
-					$("#result").show();
-				}
-				
-			</script>
-			<script>
-				//var x = document.getElementById("demo");
-				var url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
-				var position;
-				
-				powerSelected(2);
-				
-				function getRandomColor(){
-					var letters="0123456789ABCDEF";
-					var p="#";
-					for (var i=0;i<6;i++){
-						p+=letters[Math.floor(Math.random()*16)];
-					}
-					return p;
-				}
-				
-				function loadWheel(pos) {
-
-					/*
-						x.innerHTML = "Latitude: " + pos.coords.latitude +
-						"<br>Longitude: " + pos.coords.longitude
-					*/
-					position = pos.coords.latitude + "," + pos.coords.longitude
-					console.log(position)
-					$.ajax({
-						url: url,
-						data: {
-							location : position,
-							key : "AIzaSyBYLeZhd5Azh-sFjX1ggAf-zI4_akIzYPA",
-							type: "restaurant",
-							radius: 500
-						},
-						dataType: 'json',
-						success: function(data) {
+	</head>
+	
+	<body>
+		<div align="center">
+			<h1>Nominate</h1>
+			<p>
+				Can't decide where to eat out? Let Nominate find something for you!
+			</p>
+			<div id="spinner">
+				<table cellpadding="0" cellspacing="0" border="0">
+					<tr>
+						<td>
+							<br />
+							<img id="spin_button" src="spin_on.png" alt="Spin" onClick="startSpin();" />
+							<br />
+							<a id="advbtn" href="#" onclick="toggleAdvanced();">Show advanced options</a>
 							
-						}
-					})
-					
-				}
-
-				
-				
-				
-				
-				
-				
-		if (navigator.geolocation)navigator.geolocation.getCurrentPosition(showPosition);
-			var p;
-			function showPosition(position) {
-				p=position;
-			}
+						</td>
+						<td width="438" height="582" class="the_wheel" align="center" valign="center" rowspan="2">
+							<canvas id="canvas" width="434" height="434">
+								<p style="{color: white}" align="center">Sorry, your browser doesn't support canvas. Please try another.</p>
+							</canvas>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div id="choicesel">
+								<h2>What are you searching for?</h2>
+								<table cellpadding="0" cellspacing="0" border="0">
+									<tr>
+										<td>
+											<div class="setsels" onclick="setsel(1)">
+												<p>Restaurants and Eateries</p>
+											</div>
+										</td>
+										<td>
+											<div class="setsels" onclick="setsel(2)">
+												<p>Places to see</p>
+											</div>
+										</td>
+										<td>
+											<div class="setsels" onclick="setsel(3)">
+												<p>Places to have fun</p>
+											</div>
+										</td>
+									</tr>
+								</table>
+								<div id="PlaceSearch">
+									<h2>Where do you want to search?</h2>
+									<button id="locbtn" onclick="getPosition()">My Location</button>
+									<p>or search here:</p>
+									<input type="text"></input>
+								</div>
+								<button>Go!</button>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
 			
-				
-				
-				
-				
-				
-				
-				
-				function thing(fill, loc){
-					this.fillStyle=fill;
-					this.text=loc;
-				}
-
-				function loadWheel(activityType) {
-					var place;
-					if (p){
-						place = new google.maps.LatLng(p.coords.latitude, p.coords.longitude);
-					}else{
-						place = new google.maps.LatLng(-33.8665, 151.1956);
-					}
-					
-					
-					var map = new google.maps.Map(document.getElementById('invis'), {
-						center: place,
-						zoom: 15,
-						scrollwheel: false
-					});
-					
-					// Specify location, radius and place types for your Places API search.
-					var request = {
-						location: place,
-						radius: '500',
-						types: [activityType]
-					};
-					
-					// Create the PlaceService and send the request.
-					// Handle the callback with an anonymous function.
-					var service = new google.maps.places.PlacesService(map);
-					service.nearbySearch(request, function(results, status) {
-						if (status == google.maps.places.PlacesServiceStatus.OK) {
-							for (var i = 0; i < results.length; i++) {		
-								var segments=[];
-								var p = (results.length>20) ? 20:results.length;
-								for (var i=0;i<p;i++){
-									segments.push(new thing(getRandomColor(),results[i].name));
-								}
-								theWheel=new Winwheel({
-									'outerRadius': 212, // Set outer radius so wheel fits inside the background.
-									'innerRadius': 65, // Make wheel hollow so segments don't go all way to center.
-									'textFontSize': 10, // Set default font size for the segments.
-									'textOrientation': 'vertical', // Make text vertial so goes down from the outside of wheel.
-									'textAlignment': 'outer', // `	Align text to outside of wheel.
-									'numSegments': 20, // Specify number of segments.
-									'segments': segments,
-									'animation': // Specify the animation to use.
-									{
-										'type': 'spinToStop',
-										'duration': 8, // Duration in seconds.
-										'spins': 3, // Default number of complete spins.
-										'callbackFinished': alertPrize
-									}
-								});
-							}
-						}
-					});
-				}
-				
-				// Run the initialize function when the window has finished loading.
-			</script>
+			
+			
+			
+			
+			
+			<div id="result">
+				<iframe id="result_frame" width="600" height="450" frameborder="0" style="border:0"></iframe>
+				<br/>
+				<a href="#" onClick="resetWheel(); powerSelected(2); return false;">Spin Again</a>
+			</div>
+			<div id="invis" style="display:none">
+				<p> invisible div for map</p>
+			</div>
 		</body>
 		
 	</html>
