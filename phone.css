@@ -1,0 +1,47 @@
+h1{
+	font-size: 15vw;
+    margin: 0;
+}
+h2{
+	font-size: 5vw;
+    margin: 0;
+}
+a, p, input, button{
+	font-size:3vw;
+}
+#spin_button{
+	width:30vw;
+}
+#canvas {
+    width: 180vw;
+    position: fixed;
+    top: 80vw;
+    left: -40vw;
+}
+#choicesel, #result{
+	display:none;
+}
+
+td{
+	width:33%;
+}
+.setsels{
+	width:100%;
+	height:10vh;
+	text-align:center;
+	border: solid;
+	border-width:1px;
+	background-color:darkgreen;
+	color:white;
+}
+
+.selected{
+	background-color:#00ff00;
+	color:black;
+}
+#result_frame{
+	width:100vw;
+	height:80vh;
+	
+	
+}

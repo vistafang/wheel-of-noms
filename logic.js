@@ -65,7 +65,8 @@ function resetWheel() {
 	
 	
 	
-	$("#spinner").show();
+	$(".outerwheel").show();
+	$("#advbtn").show();
 	$("#result").hide();
 }
 
@@ -75,11 +76,11 @@ function resetWheel() {
 function alertPrize(indicatedSegment) {
 	// In a real project probably want to do something more interesting than this with the result.
 	
-	$("#spinner").hide();
-	
-	$("#result_frame")[0].src="https://www.google.com/maps/embed/v1/place?key=AIzaSyA-WrVFgScO7VwF4nZws22J38RbxyZI3AQ&q="+indicatedSegment.text;
-	
-	$("#result").show();
+	$(".outerwheel").hide();
+	$("#advbtn").hide();
+	$("#result_frame")[0].onload = function() { $("#result").show();};
+	var safetext=encodeURIComponent(indicatedSegment.text);
+	$("#result_frame")[0].src="https://www.google.com/maps/embed/v1/place?key=AIzaSyA-WrVFgScO7VwF4nZws22J38RbxyZI3AQ&q="+safetext;
 }
 
 
@@ -102,8 +103,8 @@ function getRandomColor(){
 
 var map;
 var service;
-
-window.onload=function(){
+$(document).ready(start);
+function start(){
 	var pyrmont = {lat: -33.867, lng: 151.195};
 	map = new google.maps.Map(document.getElementById('invis'), {
 		center: pyrmont,
@@ -247,10 +248,11 @@ function failPosition(){
 
 function toggleAdvanced(){
 	$('#choicesel').toggle();
-	if ($('#advbtn').innerHTML == "Hide advanced options"){
-		$('#advbtn').innerHTML == "Show advanced options";
+	$('.outerwheel').toggle();
+	if ($('#advbtn').html() == "Hide advanced options"){
+		$('#advbtn').html("Show advanced options");
 		}else{
-		$('#advbtn').innerHTML == "Hide advanced options"
+		$('#advbtn').html("Hide advanced options")
 	}
 	
 	
