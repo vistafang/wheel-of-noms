@@ -47,11 +47,6 @@ h1, p
 #choicesel table{
 	width:100%;
 }
-#result_frame{
-	left:50%;
-	width:600px;
-	margin-left:-400px;
-}
 td{
 	width:33%;
 }
