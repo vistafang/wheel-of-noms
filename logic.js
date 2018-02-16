@@ -117,11 +117,10 @@ function start(){
 	setsel(1);
 	
 	autocomplete.setTypes(['geocode']);
-	
-	
+	$("#rangeSlide").on("change",loadWheel);
+	$("#rangeSlide").on("mousemove",updateRange);
 	
 	autocomplete.addListener('place_changed', function() {
-		
 		var place = autocomplete.getPlace();
 		if (!place.geometry) {
             // User entered the name of a Place that was not suggested and
@@ -145,6 +144,7 @@ function thing(fill, loc){
 	this.text=loc;
 }
 var rqset;
+var searchRange=500;
 function loadWheel() {
 	var place;
 	if (p){
@@ -157,7 +157,7 @@ function loadWheel() {
 	// Specify location, radius and place types for your Places API search.
 	var request = {
 		location: place,
-		radius: '500',
+		radius: searchRange,
 	types: rqset
 };
 
@@ -253,7 +253,18 @@ function toggleAdvanced(){
 		$('#advbtn').html("Show advanced options");
 		}else{
 		$('#advbtn').html("Hide advanced options")
-	}
+	}	
+}
+
+
+
+function updateRange(e){
+	var expd=Math.pow(2,e.currentTarget.value);
+	//round to 2sf
+	var tp = expd/Math.pow(10,Math.round(Math.log10(expd))-1);
+	tp=Math.round(tp);
+	tp*=Math.pow(10,Math.round(Math.log10(expd))-1);
 	
-	
+	$("#rangelabel")[0].innerHTML=tp+"m";
+	searchRange=tp;
 }

@@ -7,7 +7,6 @@
 		<script src="phono_rdr.js"></script>
 		<script src="logic.js"></script>
 		<script type="text/javascript" src="Winwheel.min.js"></script>
-		<script type="text/javascript" src="sampleresponse.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
 		<script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false&libraries=places&key=AIzaSyBYLeZhd5Azh-sFjX1ggAf-zI4_akIzYPA"></script> 
 		
@@ -55,6 +54,8 @@
 					<button id="locbtn" onclick="getPosition()">My Location</button>
 					<p>or search here:</p>
 					<input id="lcin" type="text"></input>
+					<h2>How far would you go?</h2>
+				<input id="rangeSlide" type="range" min="6.6" max="15.6" step="any"></input><p id="rangelabel">500m</p>
 				</div>
 			</div>
 			<a id="advbtn" href="#" onclick="toggleAdvanced();">Show advanced options</a>
