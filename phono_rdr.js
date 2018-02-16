@@ -1,6 +1,6 @@
 $(document).ready(checkphone);
 function checkphone(){
-	if (window.outerHeight>window.outerWidth){
+	if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerHeight>window.innserWidth){
 		if (!window.location.href.includes("phone"))window.location="phone.html"
 	}else{
 		if (!window.location.href.includes("index"))window.location="index.html"
