@@ -60,7 +60,6 @@ function resetWheel() {
 	theWheel.draw(); // Call draw to render changes to the wheel.
 	
 	wheelSpinning = false; // Reset to false to power buttons and spin can be clicked again.
-	
 	//show the actual wheel itself
 	
 	
@@ -78,9 +77,18 @@ function alertPrize(indicatedSegment) {
 	
 	$(".outerwheel").hide();
 	$("#advbtn").hide();
-	$("#result_frame")[0].onload = function() { $("#result").show();};
-	var safetext=encodeURIComponent(indicatedSegment.text);
-	$("#result_frame")[0].src="https://www.google.com/maps/embed/v1/place?key=AIzaSyA-WrVFgScO7VwF4nZws22J38RbxyZI3AQ&q="+safetext;
+	//find winning segment
+	for (var i of fullResults){
+		if (i.name==indicatedSegment.text){
+			var pos={lat:i.geometry.location.lat(),lng:i.geometry.location.lng()};
+			map.setCenter(pos);
+			marker.setPosition(pos);
+			infowindow.setContent("<h2>"+i.name+"</h2> <p>"+i.vicinity+"</p> <a href=https://www.google.com.au/search?q="+i.name+">Open in Google</a>");
+			infowindow.open(map, marker);
+		}
+	}
+	
+	$("#result").show();
 }
 
 
@@ -103,14 +111,30 @@ function getRandomColor(){
 
 var map;
 var service;
+var marker;
+var infowindow;
 $(document).ready(start);
 function start(){
 	var pyrmont = {lat: -33.867, lng: 151.195};
-	map = new google.maps.Map(document.getElementById('invis'), {
+	map = new google.maps.Map(document.getElementById('result_frame'), {
 		center: pyrmont,
 		zoom: 15,
 		scrollwheel: false
 	});
+	infowindow= new google.maps.InfoWindow({
+		content: "<p>Place</p>"
+	});
+	
+	marker = new google.maps.Marker({
+		position: pyrmont,
+		map: map,
+		title: 'Result'
+	});
+	
+	/*marker.addListener('click', function() {
+		infowindow.open(map, marker);
+	});*/
+	
 	service = new google.maps.places.PlacesService(map);
 	var autocomplete = new google.maps.places.Autocomplete($("#lcin")[0]);
 	getPosition();
@@ -123,7 +147,7 @@ function start(){
 	autocomplete.addListener('place_changed', function() {
 		var place = autocomplete.getPlace();
 		if (!place.geometry) {
-            // User entered the name of a Place that was not suggested and
+			// User entered the name of a Place that was not suggested and
             // pressed the Enter key, or the Place Details request failed.
             window.alert("No details available for input: '" + place.name + "'");
             return;
@@ -133,8 +157,8 @@ function start(){
 		/*
 			infowindowContent.children['place-icon'].src = place.icon;
 			infowindowContent.children['place-name'].textContent = place.name;
-			infowindowContent.children['place-address'].textContent = address;
-			infowindow.open(map, marker);
+		infowindowContent.children['place-address'].textContent = address;
+		infowindow.open(map, marker);
 		*/
 	});
 }
@@ -144,6 +168,7 @@ function thing(fill, loc){
 	this.text=loc;
 }
 var rqset;
+var fullResults;
 var searchRange=500;
 function loadWheel() {
 	var place;
@@ -158,42 +183,44 @@ function loadWheel() {
 	var request = {
 		location: place,
 		radius: searchRange,
-	types: rqset
-};
-
-// Create the PlaceService and send the request.
-// Handle the callback with an anonymous function.
-service.nearbySearch(request, function(results, status) {
-	if (status == google.maps.places.PlacesServiceStatus.OK) {
-		for (var i = 0; i < results.length; i++) {		
-			var segments=[];
-			var segct = (results.length>20) ? 20:results.length;
-			for (var i=0;i<segct;i++){
-				segments.push(new thing(getRandomColor(),results[i].name));
+		types: rqset
+	};
+	
+	// Create the PlaceService and send the request.
+	// Handle the callback with an anonymous function.
+	
+	service.nearbySearch(request, function(results, status) {
+		if (status == google.maps.places.PlacesServiceStatus.OK) {
+			fullResults=results;
+			for (var i = 0; i < results.length; i++) {		
+				var segments=[];
+				var segct = (results.length>20) ? 20:results.length;
+				for (var i=0;i<segct;i++){
+					segments.push(new thing(getRandomColor(),results[i].name));
+				}
+			}
+			theWheel=new Winwheel({
+				'outerRadius': 212, // Set outer radius so wheel fits inside the background.
+				'innerRadius': 65, // Make wheel hollow so segments don't go all way to center.
+				'textFontSize': 10, // Set default font size for the segments.
+				'textOrientation': 'vertical', // Make text vertial so goes down from the outside of wheel.
+				'textAlignment': 'outer', // `	Align text to outside of wheel.
+				'numSegments': segct, // Specify number of segments.
+				'segments': segments,
+				'animation': // Specify the animation to use.
+				{
+					'type': 'spinToStop',
+					'duration': 8, // Duration in seconds.
+					'spins': 3, // Default number of complete spins.
+					'callbackFinished': alertPrize
+				}
+			});
+			if (postspin){
+				startSpin();
+				postspin=false;
 			}
 		}
-		theWheel=new Winwheel({
-			'outerRadius': 212, // Set outer radius so wheel fits inside the background.
-			'innerRadius': 65, // Make wheel hollow so segments don't go all way to center.
-			'textFontSize': 10, // Set default font size for the segments.
-			'textOrientation': 'vertical', // Make text vertial so goes down from the outside of wheel.
-			'textAlignment': 'outer', // `	Align text to outside of wheel.
-			'numSegments': segct, // Specify number of segments.
-			'segments': segments,
-			'animation': // Specify the animation to use.
-			{
-				'type': 'spinToStop',
-				'duration': 8, // Duration in seconds.
-				'spins': 3, // Default number of complete spins.
-				'callbackFinished': alertPrize
-			}
-		});
-		if (postspin){
-			startSpin();
-			postspin=false;
-		}
-	}
-});
+	});
 }
 
 function setsel(set){
@@ -249,10 +276,10 @@ function failPosition(){
 function toggleAdvanced(){
 	$('#choicesel').toggle();
 	$('.outerwheel').toggle();
-	if ($('#advbtn').html() == "Hide advanced options"){
+	if ($('#advbtn').html() == "Done"){
 		$('#advbtn').html("Show advanced options");
 		}else{
-		$('#advbtn').html("Hide advanced options")
+		$('#advbtn').html("Done")
 	}	
 }
 
