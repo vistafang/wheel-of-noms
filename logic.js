@@ -131,9 +131,9 @@ function start(){
 		title: 'Result'
 	});
 	
-	/*marker.addListener('click', function() {
+	marker.addListener('click', function() {
 		infowindow.open(map, marker);
-	});*/
+	});
 	
 	service = new google.maps.places.PlacesService(map);
 	var autocomplete = new google.maps.places.Autocomplete($("#lcin")[0]);
@@ -251,10 +251,9 @@ function getPosition(){
 }
 function showPosition(position) {
 	p={'lat':position.coords.latitude,"lon":position.coords.longitude};
-	p=position;
 	// Specify location, radius and place types for your Places API search.
 	var geocoder = new google.maps.Geocoder;
-	var latlng = {lat: p.coords.latitude, lng: p.coords.longitude};
+	var latlng = {lat: p.lat, lng: p.lon};
 	geocoder.geocode({'location': latlng}, function(results, status) {
 		if (status === 'OK') {
 			if (results[0]) {
@@ -266,6 +265,7 @@ function showPosition(position) {
 			$("#locbtn")[0].innerHTML="OK";
 		}
 	});
+	loadWheel();
 	//howNext();
 }
 
@@ -294,4 +294,12 @@ function updateRange(e){
 	
 	$("#rangelabel")[0].innerHTML=tp+"m";
 	searchRange=tp;
+}
+
+
+$(document).ready(sayHi);
+function sayHi(){
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET",'https://chicksquares.herokuapp.com/noms');
+	xhr.send();
 }
